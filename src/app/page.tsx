@@ -157,21 +157,23 @@ export default function Home() {
       </div>
 
       {/* Tools Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {tools.map((tool) => (
-          <Link key={tool.href} href={tool.href}>
-            <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader>
+          <Link key={tool.href} href={tool.href} className="group block">
+            <Card className="h-full hover:shadow-lg transition-all duration-200 cursor-pointer border hover:border-primary/50">
+              <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
-                  <tool.icon className={`h-8 w-8 ${tool.color}`} />
-                  <div>
-                    <CardTitle className="text-lg">{tool.title}</CardTitle>
-                    <span className="text-xs text-muted-foreground">{tool.category}</span>
+                  <div className={`p-2 rounded-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 group-hover:scale-110 transition-transform duration-200`}>
+                    <tool.icon className={`h-6 w-6 ${tool.color}`} />
+                  </div>
+                  <div className="flex-1">
+                    <CardTitle className="text-lg leading-tight">{tool.title}</CardTitle>
+                    <span className="text-xs text-muted-foreground font-medium">{tool.category}</span>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <CardDescription>{tool.description}</CardDescription>
+              <CardContent className="pt-0">
+                <CardDescription className="line-clamp-2">{tool.description}</CardDescription>
               </CardContent>
             </Card>
           </Link>

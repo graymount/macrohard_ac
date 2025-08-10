@@ -60,3 +60,20 @@
     scroll-behavior: smooth;
   }
 }
+
+@layer utilities {
+  /* Fix for grid layouts with linked cards */
+  .grid > a {
+    @apply block;
+  }
+  
+  /* Ensure cards maintain consistent heights in grid */
+  .grid {
+    @apply auto-rows-fr;
+  }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-200 hover:scale-[1.02] hover:shadow-xl;
+  }
+}
