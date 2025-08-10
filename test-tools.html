@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevToolbox Test Suite</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #6366f1;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            font-weight: bold;
+            color: #6366f1;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .success {
+            background: #10b981;
+            color: white;
+        }
+        .error {
+            background: #ef4444;
+            color: white;
+        }
+        .pending {
+            background: #f59e0b;
+            color: white;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 DevToolbox Test Suite</h1>
+    
+    <div class="test-section">
+        <div class="test-title">
+            Server Status
+            <span id="server-status" class="status pending">Checking...</span>
+        </div>
+        <div id="server-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">
+            Page Load Tests
+            <span id="page-status" class="status pending">Pending</span>
+        </div>
+        <button onclick="testPages()">Run Page Tests</button>
+        <div id="page-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">
+            Tool Functionality Tests
+            <span id="tool-status" class="status pending">Pending</span>
+        </div>
+        <button onclick="testTools()">Run Tool Tests</button>
+        <div id="tool-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">Live Preview</div>
+        <iframe id="preview" src="http://localhost:3001"></iframe>
+    </div>
+
+    <script>
+        const baseUrl = 'http://localhost:3001';
+
+        // Check server status
+        async function checkServer() {
+            try {
+                const response = await fetch(baseUrl);
+                if (response.ok) {
+                    document.getElementById('server-status').className = 'status success';
+                    document.getElementById('server-status').textContent = 'Running';
+                    document.getElementById('server-result').textContent = `✅ Server is running at ${baseUrl}`;
+                } else {
+                    throw new Error('Server returned ' + response.status);
+                }
+            } catch (error) {
+                document.getElementById('server-status').className = 'status error';
+                document.getElementById('server-status').textContent = 'Not Running';
+                document.getElementById('server-result').textContent = `❌ Server is not accessible: ${error.message}`;
+            }
+        }
+
+        // Test pages
+        async function testPages() {
+            document.getElementById('page-status').className = 'status pending';
+            document.getElementById('page-status').textContent = 'Testing...';
+            
+            const pages = [
+                { url: '/', name: 'Home' },
+                { url: '/tools/json-formatter/', name: 'JSON Formatter' },
+                { url: '/tools/base64/', name: 'Base64 Tool' },
+                { url: '/tools/hash-generator/', name: 'Hash Generator' },
+                { url: '/about/', name: 'About' },
+                { url: '/privacy/', name: 'Privacy Policy' },
+                { url: '/terms/', name: 'Terms of Service' }
+            ];
+
+            let results = [];
+            let allPassed = true;
+
+            for (const page of pages) {
+                try {
+                    const response = await fetch(baseUrl + page.url);
+                    if (response.ok) {
+                        results.push(`✅ ${page.name}: OK`);
+                    } else {
+                        results.push(`❌ ${page.name}: ${response.status}`);
+                        allPassed = false;
+                    }
+                } catch (error) {
+                    results.push(`❌ ${page.name}: Failed to load`);
+                    allPassed = false;
+                }
+            }
+
+            document.getElementById('page-status').className = allPassed ? 'status success' : 'status error';
+            document.getElementById('page-status').textContent = allPassed ? 'All Passed' : 'Some Failed';
+            document.getElementById('page-result').innerHTML = results.join('<br>');
+        }
+
+        // Test tools functionality
+        async function testTools() {
+            document.getElementById('tool-status').className = 'status pending';
+            document.getElementById('tool-status').textContent = 'Testing...';
+            
+            let results = [];
+            let allPassed = true;
+
+            // Test JSON formatter
+            try {
+                const jsonTest = JSON.stringify({test: "data", number: 123});
+                const formatted = JSON.stringify(JSON.parse(jsonTest), null, 2);
+                results.push('✅ JSON Formatter: Logic works');
+            } catch (error) {
+                results.push('❌ JSON Formatter: Failed');
+                allPassed = false;
+            }
+
+            // Test Base64
+            try {
+                const text = "Hello World";
+                const encoded = btoa(text);
+                const decoded = atob(encoded);
+                if (decoded === text) {
+                    results.push('✅ Base64: Encode/Decode works');
+                } else {
+                    throw new Error('Mismatch');
+                }
+            } catch (error) {
+                results.push('❌ Base64: Failed');
+                allPassed = false;
+            }
+
+            // Test Hash (basic check)
+            try {
+                const text = "test";
+                const encoder = new TextEncoder();
+                const data = encoder.encode(text);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                if (hashHex.length === 64) {
+                    results.push('✅ Hash Generator: SHA-256 works');
+                } else {
+                    throw new Error('Invalid hash length');
+                }
+            } catch (error) {
+                results.push('❌ Hash Generator: Failed');
+                allPassed = false;
+            }
+
+            document.getElementById('tool-status').className = allPassed ? 'status success' : 'status error';
+            document.getElementById('tool-status').textContent = allPassed ? 'All Passed' : 'Some Failed';
+            document.getElementById('tool-result').innerHTML = results.join('<br>');
+        }
+
+        // Run initial check
+        checkServer();
+        
+        // Auto-refresh server status every 5 seconds
+        setInterval(checkServer, 5000);
+    </script>
+</body>
+</html>

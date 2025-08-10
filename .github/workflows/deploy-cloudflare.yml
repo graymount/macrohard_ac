@@ -1,0 +1,56 @@
+# GitHub Actions 工作流：自动部署到 Cloudflare Pages
+# 当代码推送到 main 分支时自动部署
+
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Cloudflare Pages
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          # 如果需要环境变量，在这里添加
+          # GA_TRACKING_ID: ${{ secrets.GA_TRACKING_ID }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: macrohard-academic
+          directory: out
+          # 可选：自定义 Git 信息
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy success notification
+        if: success()
+        run: echo "🚀 部署成功！网站已更新到 Cloudflare Pages"
+
+      - name: Deploy failure notification
+        if: failure()
+        run: echo "❌ 部署失败，请检查构建日志"
