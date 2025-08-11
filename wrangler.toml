@@ -1,16 +1,21 @@
 # Wrangler 配置文件
 # 用于 Cloudflare Pages 部署
-# 更多配置选项请参考: https://developers.cloudflare.com/workers/wrangler/configuration/
+# 更多配置选项请参考: https://developers.cloudflare.com/pages/framework-guides/deploy-anything/
 
 name = "macrohard-academic"
 compatibility_date = "2024-01-15"
+pages_build_output_dir = "out"
 
-# Pages 项目配置
+# Pages 部署配置
+[build]
+command = "npm run build:cf"
+
+[build.environment]
+NODE_VERSION = "18"
+
+# 环境配置
 [env.production]
 name = "macrohard-academic"
 
 [env.preview]
 name = "macrohard-academic-preview"
-
-# 如果需要使用 Cloudflare Workers 功能，可以在这里配置
-# 当前项目是静态站点，主要通过 Pages 部署
