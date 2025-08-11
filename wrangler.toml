@@ -1,7 +1,0 @@
-# Cloudflare Pages compatible configuration
-# This file is intentionally minimal to work with Pages
-name = "macrohard-academic"
-compatibility_date = "2024-01-15"
-
-# Pages doesn't support build field, so we don't include it
-# All build configuration is handled by package.json scripts
