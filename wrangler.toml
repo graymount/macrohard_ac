@@ -1,7 +1,0 @@
-# Wrangler 配置文件
-# 用于 Cloudflare Pages 部署
-# 更多配置选项请参考: https://developers.cloudflare.com/pages/framework-guides/deploy-anything/
-
-name = "macrohard-academic"
-compatibility_date = "2024-01-15"
-pages_build_output_dir = "out"
