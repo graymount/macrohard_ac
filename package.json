@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:cf": "next build && cp -r public/* out/",
+    "postbuild": "cp public/_headers out/_headers 2>/dev/null || true",
+    "build:cf": "next build && cp public/_headers out/_headers",
     "start": "next start",
     "lint": "next lint"
   },
