@@ -5,17 +5,3 @@
 name = "macrohard-academic"
 compatibility_date = "2024-01-15"
 pages_build_output_dir = "out"
-
-# Pages 部署配置
-[build]
-command = "npm run build:cf"
-
-[build.environment]
-NODE_VERSION = "18"
-
-# 环境配置
-[env.production]
-name = "macrohard-academic"
-
-[env.preview]
-name = "macrohard-academic-preview"
