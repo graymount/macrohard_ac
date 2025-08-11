@@ -6,14 +6,11 @@ const nextConfig = {
   },
   // Cloudflare Pages compatibility
   distDir: 'out',
-  trailingSlash: true,
-  skipTrailingSlashRedirect: true,
-  generateBuildId: async () => {
-    // Generate build ID for cache invalidation
-    return Date.now().toString()
-  },
-  // Ensure proper asset prefix for Cloudflare Pages
-  assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
+  trailingSlash: false, // Changed for better Cloudflare Pages compatibility
+  // Remove assetPrefix to use relative paths
+  // This ensures CSS and JS files load correctly on Cloudflare Pages
+  assetPrefix: '',
+  basePath: '',
   // Disable x-powered-by header
   poweredByHeader: false,
   // Optimize for production
